@@ -1,6 +1,7 @@
 package ezenweb.web.domain.member;
 
 import lombok.*;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDateTime;
 

@@ -2,7 +2,6 @@ package ezenweb.web.controller;
 
 import ezenweb.web.domain.member.MemberDto;
 import ezenweb.web.service.MemberService;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -18,7 +17,7 @@ public class MemberController {
     public Resource getSignup(){ return new ClassPathResource("templates/member/signup.html");}
     @GetMapping("/login")
     public Resource getLogin(){ return new ClassPathResource("templates/member/login.html");}
-    @GetMapping("/logout")public boolean logout(){return memberService.logout();}
+
 
     // 1. @Autowired 없을때 객체[빈] 생성
     // MemberService service = new MemberService();
@@ -31,14 +30,11 @@ public class MemberController {
         boolean result = memberService.write( memberDto);
         return result;
     }
+    // 2. 회원정보[세션 ] 로그아웃
+    @GetMapping("/logout")public boolean logout(){ return memberService.logout(); }
     // 2. [R]회원정보 호출
     @GetMapping("/info")
-    public MemberDto info(@RequestParam int mno ){
-        MemberDto result = memberService.info();
-        return result;
-    }
-
-
+    public MemberDto info( ){   MemberDto result = memberService.info(  ); return result; }
 
     // 3. [U]회원정보 수정
     @PutMapping("/info")

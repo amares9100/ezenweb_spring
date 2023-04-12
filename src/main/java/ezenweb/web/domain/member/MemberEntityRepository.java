@@ -8,30 +8,29 @@ import java.util.Optional;
 
 @Repository
 public interface MemberEntityRepository extends JpaRepository< MemberEntity , Integer > {
+
     // 1. 해당 이메일 로 엔티티 찾기
     // 인수로 들어온 email과 동일한 엔티티[레코드] 찾아서 반환
     // sql :  select * from member where memail = ? ;
     MemberEntity findByMemail(String memail);
-    // 2. 해당 이메일과 비밀번호가 일치한 엔티티 여부 확인
+    // 2. 해당 이메일과 비밀번호가 일치한 엔티티 반환
     // 인수로 들어온 이메일 과 패스워드가 모두 일치한 엔티티[레코드] 찾아서 존재 여부 반환
     // sql : select * from member where memail = ? and mpassword = ? ;
-    //Optional<MemberEntity> findByMemailAndMPassword(String memail, String mpassword);
-    //Optional<MemberEntity> findBymemailAndMpassword( String memail , String mpassword);
-    // 아이디 중복체크
-    //boolean exitsByMemail(String memail);
-    //boolean exitsByMpasswordAndMemail(String mpassword , String memail);
+    Optional<MemberEntity> findByMemailAndMpassword( String memail , String mpassword);
+    // 3. [ 중복체크 활용 ] 만약에 동일한 이메일 이 존재하면 true , 아니면 false
+    boolean existsByMemail(String memail);
+    // 4. [로그인 활용 ] 만약에 동일한 이메일과 패스워드가 존재하면  true 아니면 false
+    boolean existsByMemailAndMpassword( String memail , String mpassword);
+    // 아이디찾기 [ 이름 과 전화번호 ]
+    Optional<MemberEntity> findByMnameAndMphone( String mname , String mphone );
+    // 비밀번호찾기 [ 아이디 와 전화번호 ]
+    boolean existsByMemailAndMphone( String memail , String mphone );
 
-    // 아이디 찾기 [ 이름과 전화번호가 일치하면 ]
+    MemberEntity findBymemail(String memail);
 
-    // 비밀번호 찾기 [ 아이디와 전화번호 ]
-
-    boolean existsByMemailAndMpassword(String memail, String mpassword);
-
-
-
-    // 직접만들기 예시
-    //@Query("select * from MemberEntity m where m.memail =?1")
-   // MemberEntity findId(String memail);
+    // * query 예시
+    //@Query("select * from MemberEntity m where m.memail = ?1")
+    //MemberEntity 아이디로엔티티찾기( String memail );
 
 }
 /*
@@ -45,15 +44,16 @@ public interface MemberEntityRepository extends JpaRepository< MemberEntity , In
         .findBy필드명( 인수 )       select * from member where memail = ? ;
         .findBy필드명And필드명       select * from member where memail = ? and mpassword = ? ;
         .findBy필드명or필드명
+    검색여부 [ true , false ]
+        .existsBy필드명( 인수 )
+        .findBy필드명And필드명
+        .findBy필드명or필드명
     *
         Optional 필수 X
             MemberEntity
             Optional<MemberEntity>
-
-    검색된 레코드 반환
-        Optional<MemberEntity>      : 레코드 1개
-        List<MemberEntity>          : 레코드 여러개
-
-
-
+   검색된 레코드 반환
+        Optional<MemberEntity>      : 레코드/엔티티 1개
+        List<MemberEntity>          : 레코드/엔티티 여러개
+        boolean                     : 검색 결과[true/false] 여부
  */
