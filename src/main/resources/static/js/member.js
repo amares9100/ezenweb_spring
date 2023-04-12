@@ -16,6 +16,7 @@ function onSignup(){
         }
     })
 }
+/*
 function onLogin(){
     let info = {
         memail : document.querySelector(".memail").value,
@@ -33,6 +34,7 @@ function onLogin(){
         }
     })
 }
+*/
 getMember();
 function getMember(){
     $.ajax({

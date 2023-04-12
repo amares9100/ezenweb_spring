@@ -15,10 +15,13 @@ public class MemberController {
 
     @GetMapping("/signup") // localhost:8080/member/signup 요청시 아래 템플릿[html] 반환
     public Resource getSignup(){ return new ClassPathResource("templates/member/signup.html");}
+
     @GetMapping("/login")
     public Resource getLogin(){ return new ClassPathResource("templates/member/login.html");}
 
-
+    // 2. 회원정보[세션 ] 로그아웃
+  /*  @GetMapping("/logout")public boolean logout(){ return memberService.logout(); }
+*/
     // 1. @Autowired 없을때 객체[빈] 생성
     // MemberService service = new MemberService();
     // 2. @Autowired 있을때 객체[빈] 자동 생성
@@ -30,8 +33,7 @@ public class MemberController {
         boolean result = memberService.write( memberDto);
         return result;
     }
-    // 2. 회원정보[세션 ] 로그아웃
-    @GetMapping("/logout")public boolean logout(){ return memberService.logout(); }
+
     // 2. [R]회원정보 호출
     @GetMapping("/info")
     public MemberDto info( ){   MemberDto result = memberService.info(  ); return result; }
@@ -49,12 +51,13 @@ public class MemberController {
         return result;
     }
 
-    // -------------- 스프링 시큐리티 사용하기 전 --------------- //
+   /* // -------------- 스프링 시큐리티 사용하기 전 코드--------------- //
+        // 시큐리티 사용시 설정값에서 매핑
     @PostMapping("/login")
     public boolean login( @RequestBody MemberDto memberDto ){
         boolean result = memberService.login( memberDto );
         return result;
     }
-
+    */
 
 }
