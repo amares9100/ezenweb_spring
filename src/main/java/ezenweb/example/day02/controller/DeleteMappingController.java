@@ -1,6 +1,7 @@
 package ezenweb.example.day02.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -26,5 +27,6 @@ public class DeleteMappingController {
         log.info("method3" + dto);
         return dto;
     }
+
 
 }

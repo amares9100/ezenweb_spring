@@ -14,7 +14,7 @@ public class ResourceMappingController {
 
     @GetMapping("/test1")
     public Resource getting(){
-        return new ClassPathResource("/template/test1.html");
+        return new ClassPathResource("/templates/test1.html");
     }
 
 
