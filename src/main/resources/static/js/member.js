@@ -1,3 +1,5 @@
+let mno;
+
 function onSignup(){
     let info = {
         memail : document.querySelector(".memail").value,
@@ -12,10 +14,18 @@ function onSignup(){
         contentType : "application/json",
         success : (r)=>{
             console.log(r);
-            if( r == true  ){ alert('가입이 되셨습니다.')}
-        }
+            if( r == true  ){ alert('가입이 되셨습니다.')
+            location.href="/";}
+            else{ alert('이미 가입된 아이디입니다.')}
+
+            }
+
     })
 }
+
+
+
+
 /*
 function onLogin(){
     let info = {
@@ -41,9 +51,14 @@ function getMember(){
         url : "/member/info",
         method : "get",
         success : (r)=>{
+            mno = r.mno;
             document.querySelector('.infobox').innerHTML = `${ r.mname }님`
             document.querySelector('.infobox').innerHTML += `<button onclick="getLogout()" type="button">로그아웃</button>`
-        }
+            if(r.mname != undefined){
+            document.querySelector('.infobox').innerHTML += ` <a href="/member/update_info">회원정보 수정</a>`
+            document.querySelector('.infobox').innerHTML += ` <a href="/member/delete_info">회원정보 수정</a>`
+             }
+    }
     })
 }
 function getLogout(){
@@ -53,5 +68,48 @@ function getLogout(){
         success : (r)=>{
             location.href="/";
         }
+    })
+}
+
+// 회원 정보 수정
+function onUpdate(){
+
+    console.log( mno );
+
+    let info = {
+        mno : mno ,
+        mname: document.querySelector('.mname').value,
+        mphone: document.querySelector('.mphone').value
+    }
+
+    $.ajax({
+            url: '/member/info',
+            method: 'PUT',
+            data: JSON.stringify(info),
+            contentType: 'application/json',
+            success: (r)=>{
+                console.log(r);
+                if( r === true ){ alert('회원 정보 수정');
+                location.href="/";}
+            }
+
+    })
+}
+
+// 회원 정보 탈퇴
+function onDelete(){
+    console.log( mno);
+    let mpassword = document.querySelector('.mpassword').value;
+
+    $.ajax({
+        url: '/member/info',
+        method: 'DELETE',
+        data: { "mno": mno, "mpassword": mpassword },
+        success: (r)=>{
+            console.log(r);
+            if( r === true ){ alert('회원 정보 탈퇴');
+            getLogout();}
+        }
+
     })
 }

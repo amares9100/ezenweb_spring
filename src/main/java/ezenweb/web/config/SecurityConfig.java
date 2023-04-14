@@ -15,38 +15,59 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private MemberService memberService;
-    // 인증[로그인] 관련 보안 메소드
 
+    // 인증[로그인] 관련 보안 담당 메소드
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-
-        // auth.userDetailsService(구현된 서비스 대입).서비스 안에서 로그인 패스워드 검증시 사용된 암호화 객체 대입(사용안할시 생략)
-        auth.userDetailsService(memberService).passwordEncoder(new BCryptPasswordEncoder());
-
-         // super.configure(auth);
+        auth.userDetailsService( memberService ).passwordEncoder( new BCryptPasswordEncoder() );
+        // auth.userDetailsService( )    :    UserDetailsService 가 구현된 서비스 대입
+        // .passwordEncoder(  new BCryptPasswordEncoder() ) 서비스 안에서 로그인 패스워드 검증시 사용된 암호화 객체 대입
     }
 
-    @Override // 재정의
-    // HTTP 관련 보안담당 메소드
-    // 시큐리티 사용전 : 클라이언트 요청시 --------> 디스패쳐 서블릿 ----> 핸들러매핑 [controller]
-    // 사용후 : 클라이언트 요청시 ----필터(시큐리티)----> 디스패쳐 서블릿 ----> 핸들러매핑 [controller]
+    // configure(HttpSecurity http) : http[URL] 관련 보안 담당 메소드
+    @Override // 재정의 [ 코드 바꾸기 ]
     protected void configure(HttpSecurity http) throws Exception {
-        //super.configure(http); // 부모클래스 호출
-        http.csrf() // 사이트간 요청 [post / put / delete 잠금 ]
-                .ignoringAntMatchers("/member/info") // 차단 해제
-                .ignoringAntMatchers("/member/login") // 차단 해제
-                .and() // and() 기능추가 메소드
+        //super.configure(http); // super : 부모 클래스 호출
+        http
+                // 권한에 따른 HTTP GET 요청 제한
+                .authorizeHttpRequests() // HTTP 인증 요청
+                .antMatchers("/member/info/mypage")// 인증시에만 사용할 URL
+                .hasRole("user") // 위 URL 패턴을 요청할수 있는 권한명
+                .antMatchers("/admin/**") // localhost:8080/admin/ ~~ 이하 페이지는 모두 제한
+                .hasRole("admin")
+                .antMatchers("/board/write")// 글쓰기 페이지는 회원만 가능
+                .hasRole("user")
+                .antMatchers("/**") // localhost:8080 ~ 이하 페이지는 권한 해제
+                .permitAll() // 권한 해제
+                // 토큰 ( ROLE_user ) :  ROLE_ 제외한 권한명 작성 // 인증 자체가 없을경우 로그인페이지 자동 이동
+                .and()
+                .csrf() // 사이트 간 요청 위조 [ post,put http 사용 불가능 ]
+                .ignoringAntMatchers("/member/info") // 특정 매핑URL csrf 무시
+                .ignoringAntMatchers("/member/login")
+                .and()//  기능 추가/구분 할때 사용되는 메소드
                 .formLogin()
-                    .loginPage("/member/login") // 로그인으로 사용할 url
-                    .loginProcessingUrl("/member/login") // 로그인 처리시 사용할 url
-                    .defaultSuccessUrl("/") // 로그인 성공시 이동할 url
-                    .failureUrl("/member/login") // 로그인 실패시 사용할 url
-                    .usernameParameter("memail") // 로그인시 사용할 계정 아이디의 필드명
-                    .passwordParameter("mpassword") // 로그인시 사용할 계정 비밀번호의 필드명
+                .loginPage("/member/login") // 로그인 으로 사용될 페이지의 매핑 URL
+                .loginProcessingUrl("/member/login") // 로그인을 처리할 매핑 URL
+                .defaultSuccessUrl("/") // 로그인 성공했을때 이동할 매핑 URL
+                .failureUrl("/member/login")// 로그인 실패했을때 이동할 매핑 URL
+                .usernameParameter("memail") // 로그인시 사용될 계정 아이디 의 필드명
+                .passwordParameter("mpassword")// 로그인시 사용될 계정 패스워드 의 필드명
                 .and()
                 .logout()
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout")) // 로그아웃 처리를 요청할 url
-                    .logoutSuccessUrl("/") // 로그아웃 성공했을때 이동할 url
-                    .invalidateHttpSession(true); // 세션 초기화
+                .logoutRequestMatcher( new AntPathRequestMatcher("/member/logout") ) // 로그아웃 처리 를 요청할 매핑 URL
+                .logoutSuccessUrl("/")//로그아웃 성공했을때 이동할 매핑 URL
+                .invalidateHttpSession( true ) // 세션 초기화x
+                .and()
+                .oauth2Login() // 소셜 로그인 설정
+                .defaultSuccessUrl("/") // 로그인 성공시 이동할 매핑 URL
+                .userInfoEndpoint()
+                .userService( memberService ); //  oauth2 서비스를 처리할 서비스 구현
     }
 }
+
+
+/*
+    http 오류
+        404 : 페이지 없거나 , 경로 문제
+        403 : 요청 거절
+ */

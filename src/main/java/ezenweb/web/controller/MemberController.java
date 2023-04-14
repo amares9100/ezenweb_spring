@@ -1,5 +1,6 @@
 package ezenweb.web.controller;
 
+import ezenweb.example.day02.controller.ParamDto;
 import ezenweb.web.domain.member.MemberDto;
 import ezenweb.web.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Slf4j // 로그 기능 주입
 @RestController // @Controller + @ResponseBody
@@ -18,6 +21,20 @@ public class MemberController {
 
     @GetMapping("/login")
     public Resource getLogin(){ return new ClassPathResource("templates/member/login.html");}
+
+    // 회원아이디 찾기
+    @GetMapping("/findid")
+    public Resource findid( ){ return new ClassPathResource("templates/member/findId.html"); }
+    // 비밀번호 찾기
+    @GetMapping("/findpw")
+    public Resource findpw( ){ return new ClassPathResource("templates/member/findPw.html"); }
+
+    // 회원정보 수정
+    @GetMapping("/update_info")
+    public Resource update( ){ return new ClassPathResource("templates/member/update_info.html"); }
+
+    @GetMapping("/delete_info")
+    public Resource delete( ){ return new ClassPathResource("templates/member/delete_info.html"); }
 
     // 2. 회원정보[세션 ] 로그아웃
   /*  @GetMapping("/logout")public boolean logout(){ return memberService.logout(); }
@@ -34,20 +51,42 @@ public class MemberController {
         return result;
     }
 
+
+    // 회원 아이디 찾기
+    @GetMapping("/findId")
+    public String findId(@RequestParam String mname , @RequestParam String mphone){
+        String result = memberService.findId(mname , mphone);
+        String findId = "찾으신 아이디는 : " + result+"입니다.";
+        return findId;
+    }
+
+    // 비밀번호 찾기
+    @GetMapping("/findPw")
+    public String findPw(@RequestParam String memail, @RequestParam String mphone){
+        log.info(" member info findPw : " + memail + mphone );
+        String result = memberService.findPw(memail, mphone);
+
+        String findPw = "변경된 비밀번호는 : " + result+"입니다.";
+        return findPw;
+    }
+
     // 2. [R]회원정보 호출
     @GetMapping("/info")
     public MemberDto info( ){   MemberDto result = memberService.info(  ); return result; }
 
     // 3. [U]회원정보 수정
     @PutMapping("/info")
-    public boolean update( @RequestBody MemberDto memberDto ){  log.info(" member info update : " + memberDto );
+    public boolean update_Info( @RequestBody MemberDto memberDto ){
+        log.info(" 전송된 정보 : " + memberDto );
+
+
         boolean result =  memberService.update( memberDto );
         return result;
     }
     // 4. [D]회원정보 탈퇴
     @DeleteMapping("/info")
-    public boolean delete( @RequestParam int mno ){ log.info(" member info delete : " + mno );
-        boolean result = memberService.delete( mno );
+    public boolean delete( @RequestParam int mno , @RequestParam String mpassword){ log.info("mno : " + mno + " , mpassword : " + mpassword);
+        boolean result = memberService.delete( mno , mpassword);
         return result;
     }
 
