@@ -67,7 +67,7 @@ public class MemberController {
         String result = memberService.findPw(memail, mphone);
 
         String findPw = "변경된 비밀번호는 : " + result+"입니다.";
-        return findPw;
+        return result;
     }
 
     // 2. [R]회원정보 호출

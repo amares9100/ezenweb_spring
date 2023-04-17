@@ -1,5 +1,6 @@
 let mno;
 
+
 function onSignup(){
     let info = {
         memail : document.querySelector(".memail").value,
@@ -7,6 +8,8 @@ function onSignup(){
         mname : document.querySelector(".mname").value,
         mphone : document.querySelector(".mphone").value
     }
+
+
     $.ajax({
         url : "/member/info",
         method : "post" ,
@@ -20,10 +23,31 @@ function onSignup(){
 
             }
 
+    });
+};
+
+
+
+// .ajax 통해서 로그인
+function onLogin(){
+
+    let loginForm = document.querySelectorAll(".loginForm")[0];
+    let loginFormData = new FormData(loginForm);
+
+
+    $.ajax({
+     url : "/member/login",
+            method : "post" ,
+            data : loginFormData ,
+            contentType : false,
+            processData : false,
+            success : (r)=>{
+                console.log(r);
+
+        }
     })
+
 }
-
-
 
 
 /*

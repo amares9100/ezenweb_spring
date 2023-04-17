@@ -4,12 +4,9 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 // 시큐리티[UserDetails] + 소셜회원[OAuth2User]
 @Getter@Setter@ToString@AllArgsConstructor@NoArgsConstructor@Builder
@@ -23,6 +20,8 @@ public class MemberDto implements UserDetails , OAuth2User {
     private String mrole;// 6. 회원등급 [ 가입용 ]
     private Set<GrantedAuthority> 권한목록; //7.[ 인증용 ]
     private Map<String, Object> 소셜회원정보; // 8. oauth2 인증 회원정보
+
+
 
     // 추가
     private LocalDateTime cdate;
