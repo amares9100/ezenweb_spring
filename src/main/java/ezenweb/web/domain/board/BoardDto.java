@@ -5,12 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class BoardDto {
     private int bno;
     private String btitle;
@@ -18,14 +13,28 @@ public class BoardDto {
     private int cno;
     private String cname;
 
-    public CategoryEntity toCategoryEntity() {
-        return CategoryEntity.builder()
-                .cname(this.cname).build();
-    }
+    // 작성자 회원정보
+    private int mno;
+    private String mname;
+    // 작성일
+    private String bdate;
+    // 조회수
+    private int bview;
 
-    public BoardEntity toBoardEntity() {
-        return BoardEntity.builder()
-                .btitle(this.btitle).bcontent(this.bcontent)
+
+    // Entity 변환 메소드
+    // 1. toCategoryEntity
+    public CategoryEntity toCategoryEntity(){
+        return CategoryEntity.builder()
+                .cname(this.cname)
                 .build();
     }
+    // 2. toBoardEntity
+    public BoardEntity toBoardEntity(){
+        return BoardEntity.builder()
+                .btitle( this.btitle )
+                .bcontent( this.bcontent )
+                .build();
+    }
+
 }
