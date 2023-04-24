@@ -9,7 +9,10 @@ function setCategory(){  console.log("setCategory()")
         contentType : "application/json" ,
         success : (r)=>{
             console.log(r)
-            if( r == true ) getCategory();
+            if( r == true ) {
+                document.querySelector(".cname").value = ''
+                `getCategory();`
+            }
         } // success end
     }) // ajax end
 } // setCategory end
@@ -33,176 +36,76 @@ function getCategory(){
     })
 }
 // 3. 카테고리 선택
-let selectCno = 0;
+let selectCno = 0 ; // 선택된 카테고리 번호 [ 기본값 = 0 (전체보기 ) ]
 function selectorCno( cno ){
     console.log( cno +" 의 카테고리 선택");
-    selectCno = cno;
-    getBoard(cno);
+    selectCno = cno; // 이벤트로 선택한 카테고리번호를 전역변수에 대입
+    getBoard( cno ); // 선택된 카테고리 기준으로 게시물 출력
 }
-
+// 4. 게시물 쓰기
 function setBoard(){
-
-     if(selectCno == 0){
-        alert("카테고리를 선택해주세요.");
-        return;
-    }
-    let info = {
+    if( selectCno == 0 ){  alert('작성할 게시물의 카테고리 선택해주세요'); return; }
+    let info = { // @RequestBody 이용한 json 요청값을 자동으로 DTO 매핑 하기 위해서 조건[ 필드명 동일 ]
         btitle : document.querySelector(".btitle").value,
         bcontent : document.querySelector(".bcontent").value,
         cno : selectCno
     }
-
-
     $.ajax({
-    url : "/board/write",
-    method : "post",
-    data : JSON.stringify( info ),
-    contentType : "application/json",
-    success : (r)=>{
-        console.log(r);
-        document.querySelector(".btitle").value = '';
-        document.querySelector(".bcontent").value = '';
-        getBoard( selectCno ) // 현재 선택된 카테고리 기준으로 게시물들을 재출력
-    }
-
-
-
-
-    })
-
-}
-getBoard(0); // 0 : 전체보기
-function getBoard(cno){
-    selectCno = cno;
-
-    $.ajax({
-    url : "/board/list",
-    method : "get",
-    data : {"cno" : selectCno},
-    success : (r)=>{
-        console.log(r);
-        let html=`
-                    <tr>
-                        <th> 번호 </th>
-                        <th> 제목 </th>
-                        <th> 작성자 </th>
-                        <th> 작성일 </th>
-                        <th> 조회수 </th>
-                    </tr>
-        `;
-        r.forEach( (o)=>{
-            html+=`
-                     <tr>
-                          <th> ${o.bno} </th>
-                          <th onclick="detail(${o.bno})"> ${o.btitle} </th>
-                          <th> ${o.mname} </th>
-                          <th> ${o.bdate} </th>
-                          <th> ${o.bview} </th>
-                     </tr>
-            `
-
-        });
-
-
-
-        document.querySelector(".boardlistbox").innerHTML = html;
-    }
- })
-}
-
-// 내글보기
-function myboards(){
-
-    $.ajax({
-    url : "/board/myboards",
-    method : "get",
-    success : (r)=>{
-        console.log(r);
-     let html=`
-                        <tr>
-                            <th> 번호 </th>
-                            <th> 제목 </th>
-                            <th> 작성자 </th>
-                            <th> 작성일 </th>
-                            <th> 조회수 </th>
-                        </tr>
-            `;
-
-      r.forEach( (o)=>{
-                 html+=`
-                          <tr>
-                               <th> ${o.bno} </th>
-                               <th onclick="detail(${o.bno})"> ${o.btitle} </th>
-                               <th> ${o.mname} </th>
-                               <th> ${o.bdate} </th>
-                               <th> ${o.bview} </th>
-                          </tr>
-                 `
-
-             });
-             document.querySelector(".boardlistbox").innerHTML = html;
-
-    }
-
-
-    })
-
-
-}
-
-function detail(bno){
-    console.log("클릭했다" + bno)
-
-     $.ajax({
-        url : "/board/detail",
-        method : "get",
-        data : {"bno" : bno},
+        url : "/board/write", method : "post",
+        data : JSON.stringify( info ) ,  contentType : "application/json",
         success : (r)=>{
             console.log(r);
-        let html=`
-                            <tr>
-                                <th> 번호 </th>
-                                <th> 제목 </th>
-                                <th> 내용 </th>
-                                <th> 작성자 </th>
-                                <th> 작성일 </th>
-                                <th> 조회수 </th>
-                                <th> 비고 </th>
-                            </tr>
-                `;
-                r.forEach( (o)=>{
-                    html+=`
-                             <tr>
-                                  <th> ${o.bno} </th>
-                                  <th> ${o.btitle} </th>
-                                  <th> ${o.bcontent} </th>
-                                  <th> ${o.mname} </th>
-                                  <th> ${o.bdate} </th>
-                                  <th> ${o.bview} </th>
-                                  <th> <button onclick="boarddelete(${o.bno})" type="button"> 글삭제</button></th>
-                             </tr>
-                    `
-
-                });
-                document.querySelector(".boardbox").innerHTML = html;
-        }
-     })
-
-}
-
-
-function boarddelete(bno){
-    console.log("delete bno" + bno);
-    $.ajax({
-     url : "/board/boarddelete",
-         method : "delete",
-         data : {"bno" : bno},
-         success : (r)=>{
-        console.log("삭제 리턴값 : " + r);
+            if( r == 4 ){  alert('글쓰기성공');
+                document.querySelector(".btitle").value = '';
+                document.querySelector(".bcontent").value = '';
+                getBoard( selectCno ) // 현재 선택된 카테고리 기준으로 게시물들을 재출력
             }
+        }
     })
-
 }
+// 5. 게시물들 출력 [ 선택된 카테고리의 게시물 출력 ]
+getBoard( 0 )
+function getBoard( cno ){
+    selectCno = cno;
+    $.ajax({
+        url : "/board/list", method:"get", data : { "cno" : selectCno } ,
+        success : (r)=>{  console.log(r);
+            let html = ` <tr> <th> 번호 </th><th> 제목 </th><th> 작성자 </th>
+                            <th> 작성일 </th> <th> 조회수 </th>
+                        </tr>`;
+            r.forEach( ( o ) => {
+                html += ` <tr> <td> ${ o.bno } </td> <td> ${ o.btitle } </td>
+                            <td> ${ o.mname } </td>  <td> ${ o.bdate } </td>
+                            <td> ${ o.bview } </td>
+                        </tr>
+                `
+            })
+            document.querySelector('.boardlistbox').innerHTML = html;
+        }
+    })
+}
+// 6. 내가 작성한( 로그인 되어있는 가정 ) 게시물
+function myboards(){
+    $.ajax({ url:"/board/myboards" , method:"get" , success : (r)=>{
+        console.log(r);
+
+        let html = ` <tr> <th> 번호 </th><th> 제목 </th><th> 작성자 </th>
+                        <th> 작성일 </th> <th> 조회수 </th>
+                    </tr>`;
+        r.forEach( ( o ) => {
+            html += ` <tr> <td> ${ o.bno } </td> <td> ${ o.btitle } </td>
+                        <td> ${ o.mname } </td>  <td> ${ o.bdate } </td>
+                        <td> ${ o.bview } </td>
+                    </tr>
+            `
+        })
+        document.querySelector('.boardlistbox').innerHTML = html;
+
+    }})
+}
+
+
+
 
 /*
     해당 변수의 자료형 확인 Prototype

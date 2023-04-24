@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service // 서비스
@@ -29,7 +27,7 @@ public class ProductService {
     public boolean update(ProductDto dto){
         // 1. 수정할 번호를 이용한 엔티티 찾기[검색]
         Optional< ProductEntity > optionalProductEntity =
-                productEntityRepository.findById( dto.getPno() );
+            productEntityRepository.findById( dto.getPno() );
         // 2. 포장클래스에서 포장안에 엔티티가 있는지 검사
         if( optionalProductEntity.isPresent() ){
             // 3. 만약에 있으면 true 없으면 false
@@ -40,30 +38,6 @@ public class ProductService {
             return true;
         }
         return false;
-    }
-
-    // 3. 삭제
-    @Transactional
-    public boolean delete(int pno){
-        Optional< ProductEntity > optionalProductEntity =
-                productEntityRepository.findById( pno );
-
-        if( optionalProductEntity.isPresent() ){
-           productEntityRepository.delete( optionalProductEntity.get() );
-            return true;
-        }
-        return false;
-    }
-
-    // 4. 출력
-    @Transactional
-    public ArrayList<ProductDto> print(){
-        List<ProductEntity> list = productEntityRepository.findAll();
-        ArrayList<ProductDto> listDto = new ArrayList<>();
-        list.forEach( e -> {
-            listDto.add( e.toDto());
-        });
-        return listDto;
     }
 
 

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Data // setter , getter , toString
 @AllArgsConstructor @NoArgsConstructor // 풀생성자,빈생성자

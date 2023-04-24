@@ -11,18 +11,3 @@ public class AppStart {
         SpringApplication.run( AppStart.class);
     }
 }
-
-// 프레젠테이션 레이어
-    // Controller,View   -> DTO
-// 비즈니스 레이어
-    // Service          -> DTO , Entity
-// 퍼시스턴스 레이어
-    // Repository       -> Entity
-// 데이터페이스 레이어
-    // Mysql
-
-
-// 스프링 MVC
-    // Modal -> 비스니스 영역
-    // View , Controller -> 프레젠테이션 레이어 영역
-    // 데이터접근계층 -> DAO , Repository

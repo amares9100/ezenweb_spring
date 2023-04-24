@@ -17,5 +17,4 @@ public class BaseTime {
 
     @LastModifiedDate
     private LocalDateTime udate;    // 레코드 수정 날짜
-
 }

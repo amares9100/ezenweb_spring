@@ -18,6 +18,9 @@ public class CategoryEntity extends BaseTime {
     private int cno;
     @Column( name = "cname" , nullable = true )
     private String cname;
+
+    // 작성일, 수정일 BaseTime 클래스로부터 상속받아서 사용
+
     // 양방향
     // 카테고리[pk] <----> 게시물[fk]
     // pk테이블에는 fk 흔적 남긴적이 없다.[필드 존재x 객체 존재o ]
@@ -26,3 +29,18 @@ public class CategoryEntity extends BaseTime {
     private List<BoardEntity> boardEntityList = new ArrayList<>();
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

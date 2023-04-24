@@ -3,68 +3,44 @@ package ezenweb.example.day02.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-
-// 스프링에서 관리하는 IOC컨테이너(빈객체) 등록
-@RestController // HTTP요청이 왔을때 해당 클래스로 핸들러 매핑 / @ResponseBody + @Controller
-@Slf4j  // 스프링 로그 메소드 제공 [레벨 : trace(디버그보다 세분화된 정보확인), debug(디버깅 정보 확인)
-        // info(진행상ㅎ뢍 일반정보 로그), warn(경고성 오류 정보 로그), error(오류발생한 오류정보 로그)]
+@RestController // @ResponseBody + @Controller
+@Slf4j
 public class MappingController3 {
 
-    @GetMapping(value = "/Blue")
-
-    public  String  GetBlue(){
-        System.out.println("클라이언트로부터 GetBlue 요청이 들어옴");
-        log.info("클라이언트로부터 GetBlue 요청이 들어옴");
-        return "<input type=text name=orange value=GetBlue>";
+    @GetMapping( "/blue" ) // http://localhost:8080/blue
+    public String getBlue(){
+        log.info("클라이언트로부터 getBlue 메소드 요청이 들어옴 ");
+        return "정상 응답";
     }
-
-    @PostMapping(value = "/Blue")
-
-    public  String  PostBlue(){
-        System.out.println("클라이언트로부터 PostBlue 요청이 들어옴");
-        log.info("클라이언트로부터 PostBlue 요청이 들어옴");
-        return "<input type=text name=orange value=PostBlue>";
+    @PostMapping( "/blue"  )
+    public String postBlue(){
+        log.info("클라이언트로부터 postBlue 메소드 요청이 들어옴");
+        return  "정상 응답";
     }
-
-    @PutMapping(value = "/Blue")
-
-    public  String  PutBlue(){
-        System.out.println("클라이언트로부터 PutBlue 요청이 들어옴");
-        log.info("클라이언트로부터 PutBlue 요청이 들어옴");
-        return "<input type=text name=orange value=PutBlue>";
+    @PutMapping("/blue"  )
+    public String putBlue(){
+        log.info("클라이언트로부터 putBlue 메소드 요청이 들어옴");
+        return  "정상 응답";
     }
-
-    @DeleteMapping(value = "/Blue")
-
-    public  String  DELETEBlue(){
-        System.out.println("클라이언트로부터 DELETEBlue 요청이 들어옴");
-        log.info("클라이언트로부터 DELETEBlue 요청이 들어옴");
-        return "<input type=text name=orange value=DELETEBlue>";
+    @DeleteMapping( "/blue"  )
+    public String deleteBlue(){
+        log.info("클라이언트로부터 deleteBlue 메소드 요청이 들어옴");
+        return  "정상 응답";
     }
 }
-
-
-// 크롬 or ajax or js -------요청-------> 서블릿컨테이너 ----------->DispatcherServlet
-                                                                // 핸들러 매핑으로 해당 컨트롤러 검색
-//                                                               Mapping 검색
+/*
+            스프링 부트 동작 구조
 
 
 
-
-
-
-
-
+    크롬/ajax/js ----------요청----------->     서블릿 컨테이너    -------> Dispatcher Servlet
+             http://localhost:8080/orange                                   핸들러 매핑으로 해당 컨트롤러( 스프링 컨테이너 ) 검색
+                                                                ------->  Mapping 검색
+                                                                           @RequestMapping( value = "/orange" , method = RequestMethod.GET )
+                <--------------------------응답----------------------------
 
 
 
 
 
-
-
-
-
-
-
-
-
+ */

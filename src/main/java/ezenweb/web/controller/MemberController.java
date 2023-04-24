@@ -1,6 +1,5 @@
 package ezenweb.web.controller;
 
-import ezenweb.example.day02.controller.ParamDto;
 import ezenweb.web.domain.member.MemberDto;
 import ezenweb.web.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -9,38 +8,20 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @Slf4j // 로그 기능 주입
 @RestController // @Controller + @ResponseBody
 @RequestMapping("/member")
+@CrossOrigin(origins = "http://localhost:3000")
 public class MemberController {
 
-    @GetMapping("/signup") // localhost:8080/member/signup 요청시 아래 템플릿[html] 반환
+    // 서버 사이드 라이팅 : 클라이언트가 서버에게 html 요청하는 방식 [ 리액트 통합 개발일경우 사용안함 ]
+    /*@GetMapping("/signup") // localhost:8080/member/signup 요청시 아래 템플릿[html] 반환
     public Resource getSignup(){ return new ClassPathResource("templates/member/signup.html");}
-
     @GetMapping("/login")
-    public Resource getLogin(){ return new ClassPathResource("templates/member/login.html");}
+    public Resource getLogin(){ return new ClassPathResource("templates/member/login.html");}*/
 
-    // 회원아이디 찾기
-    @GetMapping("/findid")
-    public Resource findid( ){ return new ClassPathResource("templates/member/findId.html"); }
-    // 비밀번호 찾기
-    @GetMapping("/findpw")
-    public Resource findpw( ){ return new ClassPathResource("templates/member/findPw.html"); }
-
-    // 회원정보 수정
-    @GetMapping("/update_info")
-    public Resource update( ){ return new ClassPathResource("templates/member/update_info.html"); }
-
-    @GetMapping("/delete_info")
-    public Resource delete( ){ return new ClassPathResource("templates/member/delete_info.html"); }
-
-    // 2. 회원정보[세션 ] 로그아웃
-  /*  @GetMapping("/logout")public boolean logout(){ return memberService.logout(); }
-*/
     // 1. @Autowired 없을때 객체[빈] 생성
-    // MemberService service = new MemberService();
+        // MemberService service = new MemberService();
     // 2. @Autowired 있을때 객체[빈] 자동 생성
     @Autowired MemberService memberService;
     // 1. [C]회원가입
@@ -50,14 +31,30 @@ public class MemberController {
         boolean result = memberService.write( memberDto);
         return result;
     }
+    // 2. [R]회원정보 호출
+    @GetMapping("/info")
+    public MemberDto info( ){   MemberDto result = memberService.info(  ); return result; }
 
+    // 3. [U]회원정보 수정
+    @PutMapping("/info")
+    public boolean update( @RequestBody MemberDto memberDto ){  log.info(" member info update : " + memberDto );
+        boolean result =  memberService.update( memberDto );
+        return result;
+    }
+    // 4. [D]회원정보 탈퇴
+    @DeleteMapping("/info")
+    public boolean delete( @RequestParam int mno ){ log.info(" member info delete : " + mno );
+        boolean result = memberService.delete( mno );
+        return result;
+    }
 
     // 회원 아이디 찾기
     @GetMapping("/findId")
     public String findId(@RequestParam String mname , @RequestParam String mphone){
         String result = memberService.findId(mname , mphone);
-        String findId = "찾으신 아이디는 : " + result+"입니다.";
-        return findId;
+        log.info(" member info" + result);
+
+        return result;
     }
 
     // 비밀번호 찾기
@@ -66,37 +63,38 @@ public class MemberController {
         log.info(" member info findPw : " + memail + mphone );
         String result = memberService.findPw(memail, mphone);
 
-        String findPw = "변경된 비밀번호는 : " + result+"입니다.";
+
         return result;
     }
 
-    // 2. [R]회원정보 호출
-    @GetMapping("/info")
-    public MemberDto info( ){   MemberDto result = memberService.info(  ); return result; }
+    @GetMapping("/idCheck")
+    public boolean idCheck(@RequestParam String memail){
 
-    // 3. [U]회원정보 수정
-    @PutMapping("/info")
-    public boolean update_Info( @RequestBody MemberDto memberDto ){
-        log.info(" 전송된 정보 : " + memberDto );
-
-
-        boolean result =  memberService.update( memberDto );
-        return result;
-    }
-    // 4. [D]회원정보 탈퇴
-    @DeleteMapping("/info")
-    public boolean delete( @RequestParam int mno , @RequestParam String mpassword){ log.info("mno : " + mno + " , mpassword : " + mpassword);
-        boolean result = memberService.delete( mno , mpassword);
-        return result;
+        return memberService.idCheck(memail);
     }
 
-   /* // -------------- 스프링 시큐리티 사용하기 전 코드--------------- //
-        // 시큐리티 사용시 설정값에서 매핑
+    // -------------- 스프링 시큐리티 적용될 경우 아래코드 사용 안함 --------------- //
+    /*
+    // 1. 로그인
     @PostMapping("/login")
     public boolean login( @RequestBody MemberDto memberDto ){
         boolean result = memberService.login( memberDto );
         return result;
     }
-    */
+    // 2. 회원정보[세션 ] 로그아웃
+    @GetMapping("/logout")
+    public boolean logout(){
+        return memberService.logout();
+    }
+     */
+
 
 }
+
+
+
+
+
+
+
+

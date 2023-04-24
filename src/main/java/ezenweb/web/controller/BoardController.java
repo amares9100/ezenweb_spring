@@ -1,6 +1,7 @@
 package ezenweb.web.controller;
 
 import ezenweb.web.domain.board.BoardDto;
+import ezenweb.web.domain.board.CategoryDto;
 import ezenweb.web.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,13 @@ import java.util.Map;
 @RestController
 @Slf4j
 @RequestMapping("/board")
+@CrossOrigin(origins = "http://localhost:3000")
 public class BoardController {
     // 서비스 객체들
     @Autowired private BoardService boardService;
 
     // ---------------------- view 반환 ------------------------ //
-    @GetMapping("/list2")
+    @GetMapping("")
     public Resource index(){
         return new ClassPathResource("templates/board/list.html");
     }
@@ -33,11 +35,11 @@ public class BoardController {
         return result;
     }
     // 2. 카테고리 출력 [ 반환타입 :   { 1 : 공지사항 , 2 : 자유게시판 }
-    // List : { 값 , 값 , 값 , 값 }     --> JSON[ array ]
-    // Map : { 키 : 값 , 키 : 값 , 키 : 값 } ---> JSON [ object ]
+        // List : { 값 , 값 , 값 , 값 }     --> JSON[ array ]
+        // Map : { 키 : 값 , 키 : 값 , 키 : 값 } ---> JSON [ object ]
     @GetMapping("/category/list")
-    public Map< Integer , String > categoryList(  ){  log.info("c categoryList : " );
-        Map< Integer , String > result = boardService.categoryList(  );
+    public List<CategoryDto> categoryList(  ){  log.info("c categoryList : " );
+        List<CategoryDto> result = boardService.categoryList(  );
         return result;
     }
 
@@ -54,23 +56,10 @@ public class BoardController {
         List<BoardDto> result = boardService.list( cno );
         return result;
     }
-    // 선택한 글 상세출력
-    @GetMapping("/detail")
-    public List<BoardDto> detail( @RequestParam int bno ){ log.info("c detail b : " + bno);
-        List<BoardDto> result =boardService.detail(bno);
-    return  result;
-    }
-    // *. 내가 쓴 게시물 출력
+    // 5. 내가 쓴 게시물 출력
     @GetMapping("/myboards")
-    public List<BoardDto> myboards( ){
-        log.info("c myboards : " );
+    public List<BoardDto> myboards( ){ log.info("c myboards : " );
         List<BoardDto> result = boardService.myboards();
-        return result;
-    }
-
-    @DeleteMapping("/boarddelete")
-    public boolean boarddelete( @RequestParam int bno){ log.info("bno: "+ bno);
-        boolean result = boardService.boarddelete(bno);
         return result;
     }
 

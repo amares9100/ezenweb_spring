@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +18,7 @@ import java.util.*;
 @Service @Slf4j
 public class BoardService {
 
-    @Autowired private CategoryEntityRepository categoryRepository;
+    @Autowired private CategoryRepository categoryRepository;
     @Autowired private BoardEntityRepository boardEntityRepository;
     @Autowired private MemberEntityRepository memberEntityRepository;
 
@@ -32,13 +31,13 @@ public class BoardService {
     }
     // 2. 모든 카테고리 출력
     @Transactional
-    public Map< Integer , String > categoryList(  ){    log.info("s categoryList : " );
+    public List<CategoryDto> categoryList(  ){    log.info("s categoryList : " );
         List<CategoryEntity> categoryEntityList = categoryRepository.findAll();
         // 형변환 List<엔티티> ---> MAP
-        Map< Integer , String > map = new HashMap<>();
+        List<CategoryDto> list = new ArrayList();
         categoryEntityList.forEach( (e)->{
-            map.put( e.getCno() , e.getCname() );
-        }); return map;
+            list.add( new CategoryDto(e.getCno() , e.getCname()));
+        }); return list;
     }
 
     // 3. 게시물 쓰기
@@ -71,81 +70,40 @@ public class BoardService {
         */
         return 4;
     }
-
     // 4. 카테고리별 게시물 출력
+    @Transactional
     public List<BoardDto> list(  int cno ){ log.info("s list cno : " + cno );
         List<BoardDto> list = new ArrayList<>();
-        if( cno == 0){// 전체 보기
-
-
+        // 전체 보기
+        if( cno == 0){
             List<BoardEntity> boardEntityList = boardEntityRepository.findAll();
             boardEntityList.forEach( (e)->{  // 엔티티[레코드] 하나씩 반복문
                 list.add( e.toDto() ) ; // 엔티티[레코드] 하나씩 dto 변환후 리스트 담기
             });
-
-
+        // 카테고리별 보기
         }else{
-            Optional<CategoryEntity> categoryEntityOptional= categoryRepository.findById( cno );// 해당 cno의 카테고리 정보 전체 출력
-            if(categoryEntityOptional.isPresent()){
+            Optional<CategoryEntity> categoryEntityOptional = categoryRepository.findById( cno ); // 해당 cno의 카테고리 정보 전체 출력
+            if( categoryEntityOptional.isPresent() ){
                 categoryEntityOptional.get().getBoardEntityList().forEach( (e)->{
-                    list.add( e.toDto() ) ;
+                    list.add( e.toDto() ) ; // 엔티티[레코드] 하나씩 dto 변환후 리스트 담기
                 });
             }
         }
+        return list;  // 리스트 반환
+    }
+
+    // 5. 내가 쓴 게시물 출력
+    public List<BoardDto> myboards( ){log.info("s myboards : " );
+        // 1. 로그인 인증 세션[object] --> dto 강제형변환
+        MemberDto memberDto = (MemberDto)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // 일반회원dto : 모든 정보 , oauth2dto : memail , mname , mrol
+        // 2. 회원 엔티티 찾기
+        MemberEntity entity =  memberEntityRepository.findByMemail( memberDto.getMemail() );
+        // 3. 회원 엔티티 내 게시물리스트를 반복문 돌려서 dto 리스트 로 변환
+        List<BoardDto> list = new ArrayList<>();
+        entity.getBoardEntityList().forEach( (e)->{
+            list.add( e.toDto() );
+        });
         return list;
     }
-
-    // *. 내가 쓴 게시물 출력
-    public List<BoardDto> myboards( ){
-        log.info("s myboards : " );
-        // 2.로그인된 회원의 엔티티 찾기 [ JSP : request.getSession().getAttribute()  ]
-        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); // 1. 인증된 인증 정보  찾기
-         MemberDto memberDto = (MemberDto)o;   // 2. 형변환
-        MemberEntity entity = memberEntityRepository.findByMemail( memberDto.getMemail() ); // 3. 회원엔티티 찾기
-
-        List<BoardDto> list = new ArrayList<BoardDto>();
-        entity.getBoardEntityList().forEach( (e)->{
-            list.add( e.toDto() ) ;
-        });
-     return list;
-    }
-
-    // 글 상세보기
-    public List<BoardDto> detail(int bno ){ log.info("s detail b : " + bno);
-        List<BoardDto> list = new ArrayList();
-        Optional<BoardEntity> boardEntityList = boardEntityRepository.findById(bno);
-        if(boardEntityList.isPresent()){
-            log.info("s detail boardEntityList : " + boardEntityList.get().toString());
-            list.add(boardEntityList.get().toDto());
-        }
-
-
-
-
-    return list;
-    }
-
-    //글 삭제
-
-    public boolean boarddelete(int bno){ log.info("s bno : " + bno);
-        // 로그인 회원정보
-        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); // 1. 인증된 인증 정보  찾기
-        MemberDto memberDto = (MemberDto)o;   // 2. 형변환
-        MemberEntity entity = memberEntityRepository.findByMemail( memberDto.getMemail() ); // 3. 회원엔티티 찾기
-
-        // 글정보
-        Optional<BoardEntity> boardEntityList = boardEntityRepository.findById(bno);
-        if(!boardEntityList.isPresent()){
-            return false;
-        }
-        int mno = boardEntityList.get().getMemberEntity().getMno(); // 작성자 mno
-
-        if(mno == entity.getMno()){
-            boardEntityRepository.deleteById(bno);
-        }
-
-    return true;
-    }
-
-
 }
