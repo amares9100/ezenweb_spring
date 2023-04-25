@@ -10,6 +10,8 @@ import Find from "./member/Find"
 import List from "./board/List"
 import DashBoard from "./admin/DashBoard"
 import Write from "./board/Write"
+import Update from "./member/Update"
+import AppTodo from "./exbook/AppTodo"
 export default function Index( props ) {
     return ( <>
         <BrowserRouter>
@@ -22,6 +24,8 @@ export default function Index( props ) {
                 <Route path="/board/List" element = { <List/> } />
                 <Route path="/admin/DashBoard" element = { <DashBoard/> } />
                 <Route path="/board/Write" element = { <Write/> } />
+                <Route path="/member/Update" element = { <Update/> } />
+                <Route path="/exbook/AppTodo" element = { <AppTodo/> } />
             </Routes>
             <Footer />
         </BrowserRouter>

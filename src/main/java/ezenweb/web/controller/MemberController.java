@@ -43,8 +43,8 @@ public class MemberController {
     }
     // 4. [D]회원정보 탈퇴
     @DeleteMapping("/info")
-    public boolean delete( @RequestParam int mno ){ log.info(" member info delete : " + mno );
-        boolean result = memberService.delete( mno );
+    public boolean delete( @RequestParam int mno , @RequestParam String mpassword){ log.info("mno : " + mno + " , mpassword : " + mpassword);
+        boolean result = memberService.delete( mno , mpassword);
         return result;
     }
 

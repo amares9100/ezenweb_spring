@@ -71,7 +71,6 @@ export default function Signup( props ) {
                 <h3> 회원가입 페이지 </h3>
                 <form>
                     아이디[이메일] : <input type="text" className="memail" onChange={idCheck} /> {memailMsg}<br/>
-
                     비밀번호 : <input type="text" className="mpassword" />  <br/>
                     이름 : <input type="text" className="mname" />  <br/>
                     전화번호 :  <input type="text" className="mphone" onChange={mphoneCheck} /> {mphoneMsg} <br/>

@@ -162,22 +162,28 @@ public class MemberService implements UserDetailsService , OAuth2UserService<OAu
     @Transactional
     public boolean update(  MemberDto memberDto ){
         Optional<MemberEntity> entityOptional = memberEntityRepository.findById( memberDto.getMno() );
+
         if( entityOptional.isPresent() ){
             MemberEntity entity = entityOptional.get();
             entity.setMname( memberDto.getMname());  entity.setMphone( memberDto.getMphone() );
-            entity.setMrole( memberDto.getMrole() ); entity.setMpassword( memberDto.getMpassword());
             return true;
         }
         return false;
     }
     // 4. 회원탈퇴
     @Transactional
-    public boolean delete( int mno ){
+    public boolean delete( int mno , String mpassword ){
         Optional<MemberEntity> entityOptional = memberEntityRepository.findById( mno );
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
         if( entityOptional.isPresent()){
             MemberEntity entity = entityOptional.get();
-            memberEntityRepository.delete( entity );
-            return true;
+            if(passwordEncoder.matches( mpassword , entity.getMpassword() )){
+                memberEntityRepository.delete( entity );
+                return true;
+            }
+
+
         }
         return false;
     }

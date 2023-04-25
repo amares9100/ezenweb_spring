@@ -14,11 +14,11 @@ public class TodoDto {
     private boolean done; // 체크여부
 
     public TodoEntity todoEntity(){
-        return TodoDto.builder()
+        return TodoEntity.builder()
                 .id(this.id)
                 .title(this.title)
                 .done(this.done)
-                .build().todoEntity();
+                .build();
 
     }
 }
