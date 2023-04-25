@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/todo")
-@CrossOrigin(origins = "http://localhost:3000") // 해당 컨트롤러는 http://localhost:3000 요청 CORS 정책 적용
+//@CrossOrigin(origins = "http://localhost:3000") // 해당 컨트롤러는 http://localhost:3000 요청 CORS 정책 적용
 public class TodoController {
     @GetMapping("")
     public List<TodoDto> get( ){    // TodoDto , 서비스 , 리포지토리 , 엔티티  작업

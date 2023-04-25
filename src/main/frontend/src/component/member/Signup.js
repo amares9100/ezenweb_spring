@@ -13,10 +13,10 @@ export default function Signup( props ) {
         console.log( info )
     // ajax ---> axios 변환
     axios
-        .post("http://localhost:8080/member/info" , info )
+        .post("/member/info" , info )
         .then( r => {  console.log( r );
             if( r.data == true  ){
-                alert('회원가입 성공');window.location.href="/login"; // window.location.href="이동할 경로";
+                alert('회원가입 성공');window.location.href="/member/Login"; // window.location.href="이동할 경로";
             }else{
                 alert('회원가입 실패 [ 관리자에게 문의 ]');
             }
@@ -33,7 +33,7 @@ export default function Signup( props ) {
 
         // ajax ---> axios 변환
         axios
-            .get("http://localhost:8080/member/idCheck" , {params: {memail : e.target.value}})
+            .get("/member/idCheck" , {params: {memail : e.target.value}})
             .then( r => {
 
         if(r.data == true){ setMemailMsg('사용중인 이메일입니다.')}
@@ -42,6 +42,27 @@ export default function Signup( props ) {
             })
             .catch( err => { console.log( err ) });
         }
+
+        let [mphoneMsg, setMphoneMsg] = useState();
+
+            const mphoneCheck = (e) =>{ console.log( 'mphoneCheck open' )
+
+                        let mphone = document.querySelector(".mphone").value;
+
+
+
+                // ajax ---> axios 변환
+                axios
+                    .get("/member/phoneCheck" , {params: {mphone : e.target.value}})
+                    .then( r => {
+
+                if(r.data == true){ setMphoneMsg('사용중인 전화번호입니다.')}
+                else{setMphoneMsg('사용가능한전화번호입니다.')}
+
+                    })
+                    .catch( err => { console.log( err ) });
+                }
+
 
 
 
@@ -53,7 +74,7 @@ export default function Signup( props ) {
 
                     비밀번호 : <input type="text" className="mpassword" />  <br/>
                     이름 : <input type="text" className="mname" />  <br/>
-                    전화번호 :  <input type="text" className="mphone" />  <br/>
+                    전화번호 :  <input type="text" className="mphone" onChange={mphoneCheck} /> {mphoneMsg} <br/>
                     <button onClick={ onSignup } type="button"> 가입 </button>
                 </form>
     </div>)

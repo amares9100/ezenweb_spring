@@ -6,8 +6,8 @@ export default function Header( props ) {
     // 로그아웃
     const logOut = ()=>{
         sessionStorage.setItem("login_token" , null );
-        axios.get("http://localhost:8080/member/logout").then( r=>{ console.log(r); });  // 백엔드의 인증세션 지우기
-        window.location.href="/login";
+        axios.get("/member/logout").then( r=>{ console.log(r); });  // 백엔드의 인증세션 지우기
+        window.location.href="/member/login";
     }
     return (
         <div>
@@ -17,7 +17,7 @@ export default function Header( props ) {
             <a href="/board/Write"> Write / </a>
             {
                 login == null
-                ? ( <> <a href="/login"> 로그인 / </a> <a href="/signup"> 회원가입 / </a> </> )
+                ? ( <> <a href="/member/Login"> 로그인 / </a> <a href="/member/Signup"> 회원가입 / </a> </> )
                 : ( <> <button onClick={ logOut }>로그아웃 / </button> </> )
             }
         </div>

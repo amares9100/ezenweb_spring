@@ -28,6 +28,10 @@ public interface MemberEntityRepository extends JpaRepository< MemberEntity , In
 
     Optional<MemberEntity> findByMemailAndMphone(String memail, String mphone);
 
+    boolean existsByMphone(String mphone);
+
+    MemberEntity findByMphone(String mphone);
+
     // * query 예시
     //@Query("select * from MemberEntity m where m.memail = ?1")
     //MemberEntity 아이디로엔티티찾기( String memail );

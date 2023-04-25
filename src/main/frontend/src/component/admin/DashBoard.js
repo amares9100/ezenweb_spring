@@ -11,11 +11,12 @@ export default function DashBoard( props ) {
     console.log( 'setCategory')
         let cname = document.querySelector(".cname").value;
 
-        axios.post('http://localhost:8080/board/category/write' , {"cname" : cname} )
+        axios.post('/board/category/write' , {"cname" : cname} )
         .then((r) =>{
 
         if(r.data == true){
-        alert("카테고리 등록성공"); cname.value = '';
+        alert("카테고리 등록성공");
+        document.querySelector(".cname").value = "";
         }
         })
     }

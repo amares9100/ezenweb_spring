@@ -99,6 +99,16 @@ public class MemberService implements UserDetailsService , OAuth2UserService<OAu
     public boolean write( MemberDto memberDto ){
         // 스프링 시큐리티에서 제공하는 암호화[ 사람이 이해하기 어렵고 컴퓨터는 이해할수 있는 단어 ] 사용하기
             // DB 내에서 패스워드 감추기 , 정보가 이동하면 패스워드 노출 방지
+        MemberEntity idCheck = memberEntityRepository.findByMemail(memberDto.getMemail());
+        if(idCheck != null){
+            System.out.println("생성된 아이디가 존재");
+            return false;
+        }
+        MemberEntity phoneCheck = memberEntityRepository.findByMphone(memberDto.getMphone());
+        if(phoneCheck != null){
+            System.out.println("생성된 전화번호가 존재");
+            return false;
+        }
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                 // 인코더 : 특정 형식으로변경  // 디코더 : 원본으로 되돌리기
             log.info("비크립트 암호화 사용 : " + passwordEncoder.encode( "1234") );
@@ -259,11 +269,19 @@ public class MemberService implements UserDetailsService , OAuth2UserService<OAu
         return npw;
 
     }
-
+    @Transactional
     public boolean idCheck(String memail){
         return memberEntityRepository.existsByMemail(memail);
 
     }
+
+    @Transactional
+    public boolean phoneCheck(String mphone){
+
+
+        return memberEntityRepository.existsByMphone(mphone);
+    }
+
 
 
 }

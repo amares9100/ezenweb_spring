@@ -15,6 +15,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import java.io.IOException;
 
 @Component // 빈 등록 [ Autowired 사용할려고 ]
 @Slf4j // 로그
+//@CrossOrigin(origins = "http://localhost:3000")
 public class AuthSuccessFailHandler implements AuthenticationSuccessHandler , AuthenticationFailureHandler {
     // ObjectMapper
     // @Autowired // 사용 불가 ..

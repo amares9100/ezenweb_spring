@@ -11,7 +11,7 @@ const findId = () =>{ console.log( 'findId open' )
 
     // ajax ---> axios 변환
     axios
-        .get("http://localhost:8080/member/findId" , {
+        .get("/member/findId" , {
             params : {mname : mname,
                       mphone : mphone
                      }
@@ -31,7 +31,7 @@ const findId = () =>{ console.log( 'findId open' )
 
         // ajax ---> axios 변환
         axios
-            .get("http://localhost:8080/member/findPw" , {
+            .get("/member/findPw" , {
                  params : {memail : memail,
                            mphone : mphone
                            }
@@ -53,14 +53,14 @@ const findId = () =>{ console.log( 'findId open' )
                            전화번호 :  <input type="text" className="mphone1" />  <br/>
                            <button onClick={ findId } type="button"> 아이디 찾기 </button>
                        </form>
-                       <div class="findid"></div>
+                       <div>  아이디 : <span class="findid"></span></div>
                        <h3> 회원정보찾기[비밀번호 ] </h3>
                         <form>
                             아이디[이메일] : <input type="text" className="memail2" /> <br/>
                             전화번호 :  <input type="text" className="mphone2" />  <br/>
                             <button onClick={ findPw} type="button"> 비밀번호 찾기 </button>
-                            <div class="findpw"></div>
+                            <div> 비밀번호 : <span class="findpw"></span></div>
                         </form>
-           </div>)
+           </div>
      </>)
 }

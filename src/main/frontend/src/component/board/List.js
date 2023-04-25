@@ -22,7 +22,7 @@ export default function List( props ) {
     let [ cno , setCno ] = useState( 0 )
     // 2. 서버에게 요청하기 [ 컴포넌트가 처음 생성 되었을때 ]
     useEffect( ()=>{
-        axios.get('http://localhost:8080/board/list',{ params : { cno : cno } })
+        axios.get('/board/list',{ params : { cno : cno } })
             .then( r => { console.log(r); setRows( r.data ) } )
             .catch( err => { console.log(err); })
     } , [cno] ) // cno 변경될때마다 해당 useEffect 실행된다.
@@ -38,7 +38,7 @@ export default function List( props ) {
     <Container>
         <div style={{ display:'flex' , justifyContent : 'space-between' , alignItems : 'center' }}>
             <CategoryList categoryChange = { categoryChange } />
-            <a href="/board/write"><Button variant="outlined"> 게시물 작성 </Button></a>
+            <a href="/board/Write"><Button variant="outlined"> 게시물 작성 </Button></a>
         </div>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">

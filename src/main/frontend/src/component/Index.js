@@ -16,9 +16,9 @@ export default function Index( props ) {
             <Header />
             <Routes >
                 <Route path="/" element = { <Main/> } />
-                <Route path="/Login" element = { <Login/> } />
-                <Route path="/Signup" element = { <Signup/> } />
-                <Route path="/Find" element = { <Find/> } />
+                <Route path="/member/Login" element = { <Login/> } />
+                <Route path="/member/Signup" element = { <Signup/> } />
+                <Route path="/member/Find" element = { <Find/> } />
                 <Route path="/board/List" element = { <List/> } />
                 <Route path="/admin/DashBoard" element = { <DashBoard/> } />
                 <Route path="/board/Write" element = { <Write/> } />

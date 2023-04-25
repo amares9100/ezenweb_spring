@@ -10,7 +10,7 @@ export default function Login( props ) {
         let loginFormData = new FormData(loginForm);
 
         axios
-            .post("http://localhost:8080/member/login" , loginFormData )
+            .post("/member/login" , loginFormData )
             .then( r => {
                 if( r.data == false ){
                     alert("동일한 회원정보가 없습니다. ");
@@ -37,7 +37,7 @@ export default function Login( props ) {
                 아이디[이메일] : <input type="text" name="memail" /> <br/>
                 비밀번호 : <input type="text" name="mpassword" />  <br/>
                 <button onClick={ onLogin } type="button"> 로그인 </button>
-                <a href="/Find">회원정보찾기[아이디 / 비밀번호 ]</a>
+                <a href="/member/Find">회원정보찾기[아이디 / 비밀번호 ]</a>
                 <a href="http://localhost:8080/oauth2/authorization/google"> 구글로그인 </a>
                 <a href="http://localhost:8080/oauth2/authorization/kakao"> 카카오로그인 </a>
                 <a href="http://localhost:8080/oauth2/authorization/naver"> 네이버로그인 </a>
