@@ -3,6 +3,7 @@ package ezenweb.web.controller;
 import ezenweb.web.domain.board.BoardDto;
 import ezenweb.web.domain.board.CategoryDto;
 import ezenweb.web.domain.board.PageDto;
+import ezenweb.web.domain.board.ReplyDto;
 import ezenweb.web.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,8 +54,8 @@ public class BoardController {
     }
     // 4. 카테고리별 게시물 출력
     @GetMapping("/list")
-    public PageDto list( @RequestParam int cno  , @RequestParam int page){ log.info("c list cno : " + cno +"c list pageInfo : " + page );
-        PageDto result = boardService.list( cno , page );
+    public PageDto list( PageDto pageDto){ log.info("c list pageDto : " +  pageDto);
+        PageDto result = boardService.list( pageDto);
         return result;
     }
     // 5. 내가 쓴 게시물 출력
@@ -63,5 +64,33 @@ public class BoardController {
         List<BoardDto> result = boardService.myboards();
         return result;
     }
+
+    @GetMapping("/selectList")
+    public BoardDto selectList(@RequestParam int bno){
+
+        BoardDto dto = boardService.selectList(bno);
+
+        return dto;
+    }
+
+    @DeleteMapping("/selectList/delete")
+    public boolean onDelete(@RequestParam int bno){
+
+        return boardService.onDelete(bno);
+    }
+
+    @PutMapping("/listUpdate")
+    public boolean listUpdate(@RequestBody BoardDto boarddto){
+        log.info("listUpdate : " + boarddto);
+        return boardService.listUpdate(boarddto);
+    }
+
+    @PostMapping("/replyWrite")
+    public boolean replyWrite(@RequestBody ReplyDto dto){
+        log.info("replyWrite : " + dto);
+
+        return boardService.replyWrite(dto);
+    }
+
 
 }

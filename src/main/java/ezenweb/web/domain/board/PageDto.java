@@ -19,4 +19,7 @@ public class PageDto {
     private int page;
     private int cno;
 
+    private String key;
+    private String keyword;
+
 }

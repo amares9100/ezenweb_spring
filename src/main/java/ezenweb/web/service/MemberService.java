@@ -87,6 +87,7 @@ public class MemberService implements UserDetailsService , OAuth2UserService<OAu
         }else{// 두번째 방문 이상 수정 처리
             entity.setMname( name );
         }
+        memberDto.setMno(entity.getMno());
         return memberDto;
     }
 
@@ -172,19 +173,20 @@ public class MemberService implements UserDetailsService , OAuth2UserService<OAu
     }
     // 4. 회원탈퇴
     @Transactional
-    public boolean delete( int mno , String mpassword ){
+    public boolean delete( int mno , String mpassword , String memail){
+
         Optional<MemberEntity> entityOptional = memberEntityRepository.findById( mno );
+
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-        if( entityOptional.isPresent()){
-            MemberEntity entity = entityOptional.get();
-            if(passwordEncoder.matches( mpassword , entity.getMpassword() )){
-                memberEntityRepository.delete( entity );
-                return true;
-            }
+        MemberEntity entity = entityOptional.get();
 
 
+
+        if(memail.matches(entity.getMemail()) && passwordEncoder.matches( mpassword , entity.getMpassword() )){
+            memberEntityRepository.delete(entity);
+            return true;
         }
+
         return false;
     }
     /*

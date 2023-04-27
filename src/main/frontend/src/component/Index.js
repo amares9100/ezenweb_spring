@@ -11,6 +11,10 @@ import List from "./board/List"
 import DashBoard from "./admin/DashBoard"
 import Write from "./board/Write"
 import Update from "./member/Update"
+import Secession from "./member/Secession"
+import View from "./board/View"
+import BoardUpdate from "./board/BoardUpdate"
+
 import AppTodo from "./exbook/AppTodo"
 export default function Index( props ) {
     return ( <>
@@ -26,6 +30,10 @@ export default function Index( props ) {
                 <Route path="/board/Write" element = { <Write/> } />
                 <Route path="/member/Update" element = { <Update/> } />
                 <Route path="/exbook/AppTodo" element = { <AppTodo/> } />
+                <Route path="/member/Secession" element = { <Secession/> } />
+                <Route path="/board/View/:bno" element = { <View/> } />
+                <Route path="/board/BoardUpdate" element = { <BoardUpdate/> } />
+
             </Routes>
             <Footer />
         </BrowserRouter>

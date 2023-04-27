@@ -1,9 +1,10 @@
 package ezenweb.web.domain.board;
 
-import ezenweb.example.day06_객체관계.Board;
+
 import ezenweb.web.domain.BaseTime;
 import ezenweb.web.domain.member.MemberEntity;
 import lombok.*;
+
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Entity@Table(name = "board")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
+
 public class BoardEntity extends BaseTime {
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bno;    // 게시물 번호
@@ -42,6 +44,7 @@ public class BoardEntity extends BaseTime {
     @OneToMany(mappedBy = "boardEntity")
     @Builder.Default
     private List<ReplyEntity> replyEntityList = new ArrayList<>();
+
 
     // 출력용 Entity --> Dto
     public BoardDto toDto(){

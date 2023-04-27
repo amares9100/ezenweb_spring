@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class BoardDto {
@@ -22,10 +24,16 @@ public class BoardDto {
     // 조회수
     private int bview;
 
+
+    private List<ReplyDto> replyEntityList = new ArrayList();
+
     // Entity 변환 메소드
     // 1. toCategoryEntity
     public CategoryEntity toCategoryEntity(){
-        return CategoryEntity.builder().cname(this.cname).build();
+        return CategoryEntity.builder()
+                .cname(this.cname)
+                .cno(this.cno)
+                .build();
     }
     // 2. toBoardEntity
     public BoardEntity toBoardEntity(){
@@ -34,6 +42,7 @@ public class BoardDto {
                 .bcontent( this.bcontent )
                 .build();
     }
+
 
 }
 

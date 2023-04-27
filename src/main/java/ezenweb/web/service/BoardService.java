@@ -6,16 +6,14 @@ import ezenweb.web.domain.member.MemberEntity;
 import ezenweb.web.domain.member.MemberEntityRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -26,6 +24,7 @@ public class BoardService {
     @Autowired private CategoryRepository categoryRepository;
     @Autowired private BoardEntityRepository boardEntityRepository;
     @Autowired private MemberEntityRepository memberEntityRepository;
+    @Autowired private ReplyEntityRepository replyEntityRepository;
 
     // 1. 카테고리 등록
     @Transactional
@@ -77,24 +76,20 @@ public class BoardService {
     }
     // 4. 카테고리별 게시물 출력
     @Transactional
-    public PageDto list(  int cno  , int page){ log.info("s list cno : " + cno );
+    public PageDto list(  PageDto pageDto){ log.info("s list cno : " + pageDto );
         List<BoardDto> list = new ArrayList<>();
         // PageRequest.of(페이지번호[0시작] , 페이지당 표시수 , Sort,by(Sort.Direction.DESC/ASC , "정렬기준필드명"));
-        Pageable pageable = PageRequest.of(page-1 , 5 , Sort.by(Sort.Direction.DESC , "bno"));
-        Page<BoardEntity> entityPage = boardEntityRepository.findBySearch(cno , pageable);
+        Pageable pageable = PageRequest.of(pageDto.getPage()-1 , 3 , Sort.by(Sort.Direction.DESC , "bno"));
+        Page<BoardEntity> entityPage = boardEntityRepository.findBySearch(pageDto.getCno() ,pageDto.getKey() , pageDto.getKeyword() ,  pageable);
 
 
         entityPage.forEach((b)->{
             list.add(b.toDto());
         });
-
-        return PageDto.builder()
-                .boardDtoList(list)
-                .totalCount(entityPage.getTotalElements())
-                .totalPage(entityPage.getTotalPages())
-                .cno(cno)
-                .page(page)
-                .build();
+        pageDto.setBoardDtoList(list);
+        pageDto.setTotalPage(entityPage.getTotalPages());
+        pageDto.setTotalCount(entityPage.getTotalElements());
+        return pageDto;
     }
 
     // 5. 내가 쓴 게시물 출력
@@ -110,5 +105,88 @@ public class BoardService {
             list.add( e.toDto() );
         });
         return list;
+    }
+
+    // 선택한 글 출력 + 선택한 글의 댓글포함
+    @Transactional
+    public BoardDto selectList(int bno){
+        List<ReplyDto> list= new ArrayList<>();
+        BoardEntity entity = boardEntityRepository.findByBno(bno);
+
+        // 검색결과 3개 => 리스트로 받기
+        List<ReplyEntity> replyEntityList = replyEntityRepository.findByBno(bno);
+        // 받은 Entity 리스트를 Dto로 변환해서 Dto리스트에 담기
+        replyEntityList.forEach((e)->{
+            list.add(e.toDto());
+        });
+
+        BoardDto dto = entity.toDto();
+        // 담은 replyDto리스트를 boardDto에 담기
+        dto.setReplyEntityList(list);
+
+        return dto;
+    }
+
+    // 글삭제
+    @Transactional
+    public boolean onDelete(int bno){
+
+        Optional<BoardEntity> entity = boardEntityRepository.findById(bno);
+    if(entity.isPresent()){
+        boardEntityRepository.delete(entity.get());
+        return true;
+    }
+
+
+        return false;
+    }
+
+    // 글수정
+    @Transactional
+    public boolean listUpdate(BoardDto dto){
+        Optional<BoardEntity> entityOptional = boardEntityRepository.findById(dto.getBno());
+
+        if(entityOptional.isPresent()){
+
+            BoardEntity entity = entityOptional.get();
+
+            entity.setBcontent(dto.getBcontent());
+            entity.setBtitle(dto.getBtitle());
+            entity.setCategoryEntity(dto.toCategoryEntity());
+
+
+            return true;
+        }
+
+
+    return false;
+    }
+
+
+    // reply-----------------------------------------------------
+
+    // 댓글쓰기
+    @Transactional
+    public boolean replyWrite(ReplyDto dto){
+
+        Optional<BoardEntity> entityOptional = boardEntityRepository.findById(dto.getBno());
+        BoardEntity boardEntity = entityOptional.get();
+
+        Optional<MemberEntity> memberEntityOptional = memberEntityRepository.findById(dto.getMno());
+        MemberEntity memberEntity = memberEntityOptional.get();
+
+
+        ReplyEntity entity =  replyEntityRepository.save(dto.toEntity());
+
+        // 양방향 설정
+        entity.setMemberEntity(memberEntity);
+        entity.setBoardEntity(boardEntity);
+        memberEntity.getReplyEntityList().add(entity);
+        boardEntity.getReplyEntityList().add(entity);
+
+    if(entity == null){
+        return false;
+    }
+    return true;
     }
 }

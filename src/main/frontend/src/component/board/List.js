@@ -21,7 +21,7 @@ import CategoryList from './CategoryList';
 export default function List( props ) {
     // 1. 요청한 게시물 정보를 가지고 있는 리스트 변수[ 상태 관리변수 ]
     let [ rows , setRows ] = useState( [] )
-    let [ pageInfo , setPageInfo ] = useState( { 'cno' : 0 , 'page' : 1 } )
+    let [ pageInfo , setPageInfo ] = useState( { 'cno' : 0 , 'page' : 1 , 'key' : '' , 'keyword' : ''} )
     let [totalPage , setTotalPage ] = useState(1);
     let [totalCount , setTotalCount ] = useState(1);
     // 2. 서버에게 요청하기 [ 컴포넌트가 처음 생성 되었을때 ]
@@ -44,24 +44,33 @@ export default function List( props ) {
     // 3. 카테고리 변경
     const categoryChange = ( cno ) => {
         pageInfo.cno =cno;
+        pageInfo.key = '';
+        pageInfo.keyword = '';
         setPageInfo({...pageInfo});
         }
 
 
     // 4. 페이징 번호
-    const selectPage = (e) => {
+    const selectPage = (event , value) => {
         //console.log(e);
         //console.log(e.target);
         //console.log(e.target.value);
         //console.log(e.target.innerHTML); // 해당 버튼(태그)안에 있는 HTML 호출
-        console.log(e.target.outerText); // 해당 버튼(태그) 밖에 있는 text출력
-
-        pageInfo.page = e.target.outerText;
+        //console.log(event.target.outerText); // 해당 버튼(태그) 밖에 있는 text출력
+        console.log(value); //
+        pageInfo.page = value;
         setPageInfo({...pageInfo});
 
 
     }
 
+    const onSearch =()=>{
+        pageInfo.key = document.querySelector(".key").value;
+        pageInfo.keyword = document.querySelector(".keyword").value;
+        pageInfo.page = 1
+        document.querySelector(".keyword").value = '';
+        setPageInfo({...pageInfo});
+    }
 
 
 
@@ -88,7 +97,7 @@ export default function List( props ) {
               {rows.map((row) => (
                 <TableRow  key={row.name}   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}  >
                   <TableCell align="center" component="th" scope="row"> {row.bno} </TableCell>
-                  <TableCell align="left">{row.btitle}</TableCell>
+                  <TableCell align="left"><a href={'/board/View/'+row.bno}>{row.btitle}</a></TableCell>
                   <TableCell align="center">{row.mname}</TableCell>
                   <TableCell align="center">{row.bdate}</TableCell>
                   <TableCell align="center">{row.bview}</TableCell>
@@ -98,8 +107,16 @@ export default function List( props ) {
           </Table>
         </TableContainer>
         <div style={{display : 'flex' , justifyContent : 'center' }}>
-            <Pagination count={totalPage} color="primary" onClick={selectPage}/>
+            <Pagination count={totalPage}  color="primary" onChange={selectPage}/>
         </div>
+           <div>
+                <select className="key">
+                    <option value="btitle">제목</option>
+                    <option value="bcontent">내용</option>
+                </select>
+                <input type="text" className="keyword" />
+                <button type="button" onClick={onSearch}> 검색 </button>
+           </div>
     </Container>
     );
 }
