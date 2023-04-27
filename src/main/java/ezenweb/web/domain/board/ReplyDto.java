@@ -3,6 +3,8 @@ package ezenweb.web.domain.board;
 import ezenweb.web.domain.member.MemberEntity;
 import lombok.*;
 
+import java.util.List;
+
 
 @Data
 @NoArgsConstructor
@@ -16,6 +18,9 @@ public class ReplyDto {
 
     private int mno;
     private int bno;
+
+    private List<RereplyDto> rereplyDtoList;
+
 
     public ReplyEntity toEntity(){
         return ReplyEntity.builder()

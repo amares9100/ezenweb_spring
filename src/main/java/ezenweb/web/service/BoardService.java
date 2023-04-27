@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 import javax.transaction.Transactional;
@@ -25,6 +27,7 @@ public class BoardService {
     @Autowired private BoardEntityRepository boardEntityRepository;
     @Autowired private MemberEntityRepository memberEntityRepository;
     @Autowired private ReplyEntityRepository replyEntityRepository;
+    @Autowired private RereplyEntityRepository rereplyEntityRepository;
 
     // 1. 카테고리 등록
     @Transactional
@@ -110,19 +113,61 @@ public class BoardService {
     // 선택한 글 출력 + 선택한 글의 댓글포함
     @Transactional
     public BoardDto selectList(int bno){
+
+        BoardEntity entity = boardEntityRepository.findByBno(bno);
+
+        List<ReplyDto> list= new ArrayList<>();
+
+        entity.getReplyEntityList().forEach( (r)->{
+
+            List<RereplyDto> list2= new ArrayList<>();
+
+            r.getRereplyEntitiyList().forEach( (rr) -> {
+                list2.add( rr.toDto() );
+            } );
+
+            ReplyDto replyDto = r.toDto();
+            replyDto.setRereplyDtoList( list2 );
+
+            list.add( replyDto );
+        });
+
+
+
+/*
         List<ReplyDto> list= new ArrayList<>();
         BoardEntity entity = boardEntityRepository.findByBno(bno);
 
-        // 검색결과 3개 => 리스트로 받기
+// 검색결과 여러개 => 리스트로 받기
         List<ReplyEntity> replyEntityList = replyEntityRepository.findByBno(bno);
-        // 받은 Entity 리스트를 Dto로 변환해서 Dto리스트에 담기
-        replyEntityList.forEach((e)->{
+// 받은 Entity 리스트를 Dto로 변환해서 Dto리스트에 담기
+
+        List<RereplyDto> relist = new ArrayList<>();
+
+        replyEntityList.forEach((e) -> {
+            List<RereplyEntity> rereplyEntityList = rereplyEntityRepository.findByRno(e.getRno());
+
+            rereplyEntityList.forEach((y) -> {
+                relist.add(y.toDto());
+
+            });
+
+            //e.toDto().setRereplyDtoList(relist);
             list.add(e.toDto());
+
+            System.out.println("List : " + list);
+            System.out.println("relsit : " + relist);
+
+
+
         });
 
+*/
         BoardDto dto = entity.toDto();
-        // 담은 replyDto리스트를 boardDto에 담기
+// 담은 replyDto리스트를 boardDto에 담기
         dto.setReplyEntityList(list);
+
+
 
         return dto;
     }
@@ -188,5 +233,64 @@ public class BoardService {
         return false;
     }
     return true;
+    }
+
+    // 댓글삭제
+    @Transactional
+    public boolean replyDelete(int rno){
+
+        ReplyEntity replyEntity = replyEntityRepository.findById(rno).get();
+        if(replyEntity == null){
+            return false;
+        }
+        replyEntityRepository.delete(replyEntity);
+
+        return true;
+    }
+
+    // 댓글수정
+    @Transactional
+    public boolean replyUpdate(ReplyDto dto){
+
+        Optional<ReplyEntity> replyEntity = replyEntityRepository.findById(dto.getRno());
+        if(replyEntity == null){
+            return  false;
+        }
+
+        ReplyEntity reply = replyEntity.get();
+
+        reply.setRcontent(dto.getRcontent());
+        replyEntityRepository.save(reply);
+
+        return true;
+    }
+
+    @Transactional
+    public boolean rereplyWrite(RereplyDto dto){
+
+        Optional<ReplyEntity> entityOptional = replyEntityRepository.findById(dto.getRno());
+        ReplyEntity replyEntity = entityOptional.get();
+
+        Optional<MemberEntity> memberEntityOptional = memberEntityRepository.findById(dto.getMno());
+        MemberEntity memberEntity = memberEntityOptional.get();
+
+
+
+        RereplyEntity entity = rereplyEntityRepository.save(dto.toEntity());
+
+
+        // 양방향 설정
+        entity.setMemberEntity(memberEntity);
+        entity.setReplyEntity(replyEntity);
+        memberEntity.getRereplyEntitiyList().add(entity);
+        replyEntity.getRereplyEntitiyList().add(entity);
+
+        if(entity == null){
+            return false;
+        }
+        return true;
+
+
+
     }
 }

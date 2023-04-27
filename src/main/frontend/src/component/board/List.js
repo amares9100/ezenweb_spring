@@ -19,6 +19,9 @@ import CategoryList from './CategoryList';
 
 
 export default function List( props ) {
+
+
+
     // 1. 요청한 게시물 정보를 가지고 있는 리스트 변수[ 상태 관리변수 ]
     let [ rows , setRows ] = useState( [] )
     let [ pageInfo , setPageInfo ] = useState( { 'cno' : 0 , 'page' : 1 , 'key' : '' , 'keyword' : ''} )
@@ -26,6 +29,12 @@ export default function List( props ) {
     let [totalCount , setTotalCount ] = useState(1);
     // 2. 서버에게 요청하기 [ 컴포넌트가 처음 생성 되었을때 ]
     useEffect( ()=>{
+        let user = JSON.parse( sessionStorage.getItem("login_token") )
+        if(user == null){
+                    alert("로그인해주세요")
+                    window.location.href="/member/Login"
+                }
+
         axios.get('/board/list',{ params : pageInfo })
             .then( r => { console.log(r);
             setRows( r.data.boardDtoList );

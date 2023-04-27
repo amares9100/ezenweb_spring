@@ -14,6 +14,8 @@ import Update from "./member/Update"
 import Secession from "./member/Secession"
 import View from "./board/View"
 import BoardUpdate from "./board/BoardUpdate"
+import ReplyUpdate from "./board/ReplyUpdate"
+import Rereplywrite from "./board/Rereplywrite"
 
 import AppTodo from "./exbook/AppTodo"
 export default function Index( props ) {
@@ -33,6 +35,8 @@ export default function Index( props ) {
                 <Route path="/member/Secession" element = { <Secession/> } />
                 <Route path="/board/View/:bno" element = { <View/> } />
                 <Route path="/board/BoardUpdate" element = { <BoardUpdate/> } />
+                <Route path="/board/ReplyUpdate" element = { <ReplyUpdate/> } />
+                <Route path="/board/Rereplywrite" element = { <Rereplywrite/> } />
 
             </Routes>
             <Footer />

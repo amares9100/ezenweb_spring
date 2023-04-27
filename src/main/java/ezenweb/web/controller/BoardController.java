@@ -1,9 +1,6 @@
 package ezenweb.web.controller;
 
-import ezenweb.web.domain.board.BoardDto;
-import ezenweb.web.domain.board.CategoryDto;
-import ezenweb.web.domain.board.PageDto;
-import ezenweb.web.domain.board.ReplyDto;
+import ezenweb.web.domain.board.*;
 import ezenweb.web.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,5 +89,24 @@ public class BoardController {
         return boardService.replyWrite(dto);
     }
 
+    @DeleteMapping("/replyDelete")
+    public boolean replyDelete(@RequestParam int rno){
+
+        return boardService.replyDelete(rno);
+    }
+
+    @PutMapping("/replyUpdate")
+    public boolean replyUpdate(@RequestBody ReplyDto dto){
+        log.info("replyUpdate : " + dto);
+        return boardService.replyUpdate(dto);
+    }
+
+    @PostMapping("/rereplyWrite")
+    public boolean rereplyWrite(@RequestBody RereplyDto dto){
+        log.info("rereplyWrite : " + dto);
+
+
+        return boardService.rereplyWrite(dto);
+    }
 
 }

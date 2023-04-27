@@ -3,6 +3,7 @@ package ezenweb.web.domain.member;
 import ezenweb.web.domain.BaseTime;
 import ezenweb.web.domain.board.BoardEntity;
 import ezenweb.web.domain.board.ReplyEntity;
+import ezenweb.web.domain.board.RereplyEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,6 +31,10 @@ public class MemberEntity extends BaseTime {
     @OneToMany(mappedBy = "memberEntity")
     @Builder.Default
     private List<ReplyEntity> replyEntityList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "memberEntity")
+    @Builder.Default
+    private List<RereplyEntity> rereplyEntitiyList = new ArrayList<>();
 
 
     // toDto 출력용

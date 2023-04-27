@@ -5,6 +5,8 @@ import ezenweb.web.domain.member.MemberEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity @Table(name = "reply")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
@@ -24,6 +26,11 @@ public class ReplyEntity {
     @ManyToOne@JoinColumn(name="mno")
     @ToString.Exclude
     private MemberEntity memberEntity;
+
+    @OneToMany(mappedBy = "replyEntity")
+    @Builder.Default
+    private List<RereplyEntity> rereplyEntitiyList = new ArrayList<>();
+
 
     public ReplyDto toDto(){
         return ReplyDto.builder()

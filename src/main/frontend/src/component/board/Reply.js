@@ -7,10 +7,9 @@ import Button from '@mui/material/Button';
 
 
 export default function Reply(props){
+
     let user = JSON.parse( sessionStorage.getItem("login_token") )
-    // 인수 확인
-    console.log("리플 확인 : " + props.bno);
-    console.log(user.mno)
+
 
 
     const replyWrite =()=>{
@@ -25,7 +24,8 @@ export default function Reply(props){
               .then( r => { console.log(r);
 
               if(r.data == true){
-              alert('수정성공')
+              alert('작성 성공')
+              window.location.href="/board/view/"+props.bno
 
               }
 
