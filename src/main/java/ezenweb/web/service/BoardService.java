@@ -113,64 +113,30 @@ public class BoardService {
     // 선택한 글 출력 + 선택한 글의 댓글포함
     @Transactional
     public BoardDto selectList(int bno){
-
+        // 선택한 bno 검색
         BoardEntity entity = boardEntityRepository.findByBno(bno);
 
         List<ReplyDto> list= new ArrayList<>();
-
+        // 선택한 bno 의 댓글리스트의 반복문
         entity.getReplyEntityList().forEach( (r)->{
 
             List<RereplyDto> list2= new ArrayList<>();
-
+            // 각 댓글의 반복문으로 대댓글 불러오기
             r.getRereplyEntitiyList().forEach( (rr) -> {
+                // 불러온 대댓글을 list2에 담기
                 list2.add( rr.toDto() );
             } );
-
+            // 댓글의 DTO를 만들어서 그곳에 대댓글리스트 담기
             ReplyDto replyDto = r.toDto();
             replyDto.setRereplyDtoList( list2 );
-
+            // 댓글과 대댓글이 담긴 DTO를 list에 담기
             list.add( replyDto );
         });
-
-
-
-/*
-        List<ReplyDto> list= new ArrayList<>();
-        BoardEntity entity = boardEntityRepository.findByBno(bno);
-
-// 검색결과 여러개 => 리스트로 받기
-        List<ReplyEntity> replyEntityList = replyEntityRepository.findByBno(bno);
-// 받은 Entity 리스트를 Dto로 변환해서 Dto리스트에 담기
-
-        List<RereplyDto> relist = new ArrayList<>();
-
-        replyEntityList.forEach((e) -> {
-            List<RereplyEntity> rereplyEntityList = rereplyEntityRepository.findByRno(e.getRno());
-
-            rereplyEntityList.forEach((y) -> {
-                relist.add(y.toDto());
-
-            });
-
-            //e.toDto().setRereplyDtoList(relist);
-            list.add(e.toDto());
-
-            System.out.println("List : " + list);
-            System.out.println("relsit : " + relist);
-
-
-
-        });
-
-*/
+        // 보드 DTO를 만들어서 담은 댓글과 대댓글을 보드에 담기
         BoardDto dto = entity.toDto();
-// 담은 replyDto리스트를 boardDto에 담기
         dto.setReplyEntityList(list);
-
-
-
         return dto;
-    }
+}
 
     // 글삭제
     @Transactional
@@ -289,8 +255,36 @@ public class BoardService {
             return false;
         }
         return true;
+        }
+    @Transactional
+    public boolean rereplyUpdate(RereplyDto dto){
+        log.info("rereplyUpdate : " + dto);
 
+        Optional<RereplyEntity> entity = rereplyEntityRepository.findById(dto.getRrno());
+        if(entity == null){
+            return  false;
+        }
 
+        RereplyEntity rereplyEntity = entity.get();
 
+        rereplyEntity.setRrcontent(dto.getRrcontent());
+        rereplyEntityRepository.save(rereplyEntity);
+
+        return true;
+    }
+
+    @Transactional
+    public boolean rereplyDelete(int rrno){
+
+        Optional<RereplyEntity> optionalRereply = rereplyEntityRepository.findById(rrno);
+        if(optionalRereply == null){
+            return  false;
+        }
+
+        RereplyEntity entity = optionalRereply.get();
+
+        rereplyEntityRepository.delete(entity);
+
+        return true;
     }
 }

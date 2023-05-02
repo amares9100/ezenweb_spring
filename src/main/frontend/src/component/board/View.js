@@ -4,14 +4,17 @@ import {useParams} from 'react-router-dom'; // HTTP경로상의 매개변수 호
 import Container from '@mui/material/Container';
 import Reply from './Reply';
 import Rereplywrite from './Rereplywrite';
+import RereplyView from './RereplyView';
 
 export default function View(props) {
     const params = useParams(); // 매개변수가 객체형태로 들어옴.
     console.log(params); // ex. {bno : '25'}
     console.log(params.bno); // ex. 25
     let [list , setList ] = useState({});
-    let [ rows , setRows ] = useState( [] )
-    let [rr , setRr]  =useState([])
+    let [ rows , setRows ] = useState( [] );
+
+
+
 
 
      useEffect( ()=>{
@@ -21,10 +24,10 @@ export default function View(props) {
                 setList(r.data);
                 setRows(r.data.replyEntityList);
 
-                rows.map((r) =>{
-                    setRr(r.rereplyDtoList);
 
-                })
+
+
+
 
                 } )
                 .catch( err => { console.log(err); })
@@ -78,9 +81,7 @@ export default function View(props) {
             {window.location.href="/board/Rereplywrite?rno="+rno}
         }
 
-    const rereplyView =(e)=>{
 
-    }
 
     const listUpdate =()=> {window.location.href="/board/BoardUpdate?bno="+list.bno}
     const [login , setLogin ] = useState(JSON.parse( sessionStorage.getItem("login_token") ))
@@ -108,9 +109,9 @@ export default function View(props) {
             <button type="button" onClick={rereplyWrite} value={row.rno}>댓글쓰기</button>
             <button type="button" onClick={replyUpdate} value={row.rno}>수정</button>
             <button type="button" onClick={replyDelete} value={row.rno}>삭제</button>
-            <button type="button" onClick={rereplyView} value={index}>댓글보기</button>
-            <div className={row.rno}>
 
+            <div>
+            <RereplyView rereplyDtoList={row.rereplyDtoList}/>
             </div>
             </div>
 
@@ -118,16 +119,14 @@ export default function View(props) {
             <div>
             <span>내용 {row.rcontent} </span>
             <button type="button" onClick={rereplyWrite} value={row.rno}>댓글쓰기</button>
-            <button type="button" onClick={rereplyView} value={index}>댓글보기</button>
-            <div className={row.rno}>
-
+            <div>
+            <RereplyView rereplyDtoList={row.rereplyDtoList} />
             </div>
             </div>
 
           )
         ))}
         </div><br/>
-
         <Reply bno={params.bno}/>
         </Container>
     </>)

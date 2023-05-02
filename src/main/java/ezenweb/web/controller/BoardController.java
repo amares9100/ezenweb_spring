@@ -109,4 +109,16 @@ public class BoardController {
         return boardService.rereplyWrite(dto);
     }
 
+    @PutMapping("/rereplyUpdate")
+    public boolean rereplyUpdate(@RequestBody RereplyDto dto){
+        log.info("rereplyUpdate : " + dto);
+        return boardService.rereplyUpdate(dto);
+    }
+
+    @DeleteMapping("/rereplyDelete")
+    public boolean rereplyDelete(@RequestParam int rrno){
+        log.info("rereplyDelete : " + rrno);
+        return boardService.rereplyDelete(rrno);
+    }
+
 }

@@ -24,7 +24,7 @@ export default function Rereplywrite(props) {
 
                   if(r.data == true){
                   alert('작성 성공')
-
+                window.location.href="/board/List"
 
                   }
 
