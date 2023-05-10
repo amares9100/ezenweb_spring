@@ -34,6 +34,7 @@ export default function Header( props ) {
             <a href="/admin/DashBoard"> DashBoard / </a>
             <a href="/board/Write"> Write / </a>
             <a href="/exbook/AppTodo"> AppTodo / </a>
+            <a href="/board/Chatting">Chatting /</a>
             {
                 login == null
                 ? ( <> <a href="/member/Login"> 로그인 / </a> <a href="/member/Signup"> 회원가입 / </a> </> )

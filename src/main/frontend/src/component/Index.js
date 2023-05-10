@@ -16,8 +16,9 @@ import View from "./board/View"
 import BoardUpdate from "./board/BoardUpdate"
 import ReplyUpdate from "./board/ReplyUpdate"
 import Rereplywrite from "./board/Rereplywrite"
-
 import AppTodo from "./exbook/AppTodo"
+import Chatting from "./board/Chatting"
+
 export default function Index( props ) {
     return ( <>
         <BrowserRouter>
@@ -37,7 +38,7 @@ export default function Index( props ) {
                 <Route path="/board/BoardUpdate" element = { <BoardUpdate/> } />
                 <Route path="/board/ReplyUpdate" element = { <ReplyUpdate/> } />
                 <Route path="/board/Rereplywrite" element = { <Rereplywrite/> } />
-
+                <Route path="/board/Chatting" element = { <Chatting/> } />
             </Routes>
             <Footer />
         </BrowserRouter>
